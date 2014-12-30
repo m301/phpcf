@@ -6,8 +6,8 @@
  * @author Madhurendra Sachan
  * @copyright 2014 Madhurendra Sachan
  * @version v1.01
- * @access public
  */
+ 
 class DataHandler
 {
     /**
