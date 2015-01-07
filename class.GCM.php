@@ -35,4 +35,4 @@ class GCM{
 
 }
 
-GCM::sendPush(array("APA91bGgpsGid2DO7x4JL1PKbh-liLwkkpCzSaZOpvZoBgTRGvo3p4JBw1B311o2qPSSzJe-boQb7HJr4Xl67_p19_J52iKi3UQEknOa6EQMyjFrUV0aT8AyKkUNRJjV4l7AEhoQbx5UWwUWsdhTDIBaYENwR3XEwQ"),array('message'=>'Hello from madhurendra'));
+//GCM::sendPush(array("APA91bGgpsGid2DO7x4JL1PKbh-liLwkkpCzSaZOpvZoBgTRGvo3p4JBw1B311o2qPSSzJe-boQb7HJr4Xl67_p19_J52iKi3UQEknOa6EQMyjFrUV0aT8AyKkUNRJjV4l7AEhoQbx5UWwUWsdhTDIBaYENwR3XEwQ"),array('message'=>'Hello from madhurendra'));

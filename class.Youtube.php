@@ -71,18 +71,21 @@ class Youtube
     }
 }
 
-//Example code
-$d=Youtube::getDownloadURLs($_POST['url']);
+/*
+if(isset($_GET['example'])) {
+    //Example code
+    $d=Youtube::getDownloadURLs($_POST['url']);
 
-//print_r($d);
-//Example of using custom name.For better compatibility use your own server.
-//Supported browsers : http://caniuse.com/#feat=download
-foreach($d['streams'] as $sd)
-    echo "<a href='".$sd['url']."' download='".$d['title']."'>Download ".$sd['quality']." ( ".$sd['type'].")</a><br/>";
+    //print_r($d);
+    //Example of using custom name.For better compatibility use your own server.
+    //Supported browsers : http://caniuse.com/#feat=download
+    foreach($d['streams'] as $sd)
+        echo "<a href='".$sd['url']."' download='".$d['title']."'>Download ".$sd['quality']." ( ".$sd['type'].")</a><br/>";
 
-?>
-<form method="post">
-    <input name="url"/>
-    <input type="Submit" value="GET"/>
-</form>
+    ?>
+    <form method="post">
+        <input name="url"/>
+        <input type="Submit" value="GET"/>
+    </form>
 
+}*/
