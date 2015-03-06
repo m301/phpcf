@@ -11,9 +11,9 @@ class Git{
 	
 		//Create a temp. dir
 		if(defined("TMP_DIR"))
-			$this->sourceDir = TMP_DIR."tik-".md5($source);
+			$this->sourceDir = TMP_DIR."tik-".md5($source).'/';
 		else
-			$this->sourceDir = "/tmp/tik-".md5($source);			
+			$this->sourceDir = "/tmp/tik-".md5($source).'/';			
 	}
 
 	
@@ -21,7 +21,7 @@ class Git{
 		if(file_exists($this->sourceDir))
 			self::hardPull($this->branch);
 		else
-			self::cloneBranch($this->branch);
+			self::cloneBranch($this->branch,1);
 
 		
 		return $this->sourceDir;
@@ -32,9 +32,11 @@ class Git{
 		exec("chown -R `whoami`:`whoami` ".$this->sourceDir);
 	}
 	
-	function cloneBranch($branch){
-		$result = exec("git clone --branch ".$this->branch." ".$this->source.' '.$this->sourceDir);
-		$result = execGit($this->sourceDir," submodule foreach git pull");
+	function cloneBranch($branch, $latest=0){
+		if($latest) $latest  = '--depth=1';
+		$result = exec("git clone ".$latest." --branch ".$this->branch." ".$this->source.' '.$this->sourceDir);
+		//echo ("git clone ".$latest." --branch ".$this->branch." ".$this->source.' '.$this->sourceDir);
+		$result = self::execGit($this->sourceDir," submodule foreach git pull");
 		$this->takeSourceOwnership();
 		return $result;
 	}
@@ -47,7 +49,7 @@ class Git{
 	
 	
 	static function execGit($sourceDir, $command){
-		echo "git --git-dir='".$sourceDir."/.git' --work-tree='".$sourceDir."' ".$command;
+		//echo "git --git-dir='".$sourceDir."/.git' --work-tree='".$sourceDir."' ".$command;
 		$result = exec("git --git-dir='".$sourceDir."/.git' --work-tree='".$sourceDir."' ".$command);
 		
 		if(strpos($result,"FETCH_HEAD: Permission denied")){
