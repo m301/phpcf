@@ -120,20 +120,38 @@ function zipDir($source, $destination, $include_dir = false)
     return $zip->close();
 }
 
-function deleteDir($dirPath) {
-    if (! is_dir($dirPath)) {
-        throw new InvalidArgumentException("$dirPath must be a directory");
+
+
+function rrmdir($dir) { 
+   if (is_dir($dir)) { 
+     $objects = scandir($dir); 
+     foreach ($objects as $object) { 
+       if ($object != "." && $object != "..") { 
+         if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object); 
+       } 
+     } 
+     reset($objects); 
+     rmdir($dir); 
+   }else{
+	 unlink($dir);
+   } 
+ }
+
+function endsWith($haystack, $needle)
+{
+    $length = strlen($needle);
+    if ($length == 0) {
+        return true;
     }
-    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
-        $dirPath .= '/';
+
+    return (substr($haystack, -$length) === $needle);
+}
+
+//Doesn't support glob braces
+function rglob($pattern, $flags = 0) {
+    $files = glob($pattern, $flags); 
+    foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
+        $files = array_merge($files, rglob($dir.'/'.basename($pattern), $flags));
     }
-    $files = glob($dirPath . '*', GLOB_MARK);
-    foreach ($files as $file) {
-        if (is_dir($file)) {
-            self::deleteDir($file);
-        } else {
-            unlink($file);
-        }
-    }
-    rmdir($dirPath);
+    return $files;
 }
