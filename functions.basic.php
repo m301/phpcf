@@ -155,3 +155,38 @@ function rglob($pattern, $flags = 0) {
     }
     return $files;
 }
+
+
+
+function oexec($command){
+	$output = $ret = "";
+	exec($command.' 2>&1', $output, $ret);
+	return array("output"=>$output,"ret"=>$ret);
+}
+
+function sexec($command){
+	return implode("\n",oexec($command)['output']);
+}
+
+
+function jsonpp($json, $istr='  ')
+{
+    $result = '';
+    for($p=$q=$i=0; isset($json[$p]); $p++)
+    {
+        $json[$p] == '"' && ($p>0?$json[$p-1]:'') != '\\' && $q=!$q;
+        if(!$q && strchr(" \t\n", $json[$p])){continue;}
+        if(strchr('}]', $json[$p]) && !$q && $i--)
+        {
+            strchr('{[', $json[$p-1]) || $result .= "\n".str_repeat($istr, $i);
+        }
+        $result .= $json[$p];
+        if(strchr(',{[', $json[$p]) && !$q)
+        {
+            $i += strchr('{[', $json[$p])===FALSE?0:1;
+            strchr('}]', $json[$p+1]) || $result .= "\n".str_repeat($istr, $i);
+        }
+    }
+    $result = str_replace("\\/","/",$result);
+    return $result;
+}

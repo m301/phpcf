@@ -20,32 +20,42 @@ class DataHandler
      * @return string
      * @throws Exception
      */
-    public static function getContent($url, $options = array())
+    public static function getContent($url, $options = array(),$retry = 0 )
     {
         //echo $url;
-        $ch = curl_init();
+        $retry++;
 
-        $options = array(
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => false,
-                // CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 6.1; rv:8.0) Gecko/20100101 Firefox/8.0",
-                CURLOPT_AUTOREFERER => true,
-                CURLOPT_CONNECTTIMEOUT => 120,
-                CURLOPT_TIMEOUT => 120,
-                CURLOPT_MAXREDIRS => 10) + $options;
+		$ch = curl_init();
 
-        curl_setopt_array($ch, $options);
-        $result = curl_exec($ch);
+		$options = array(
+				CURLOPT_URL => $url,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HEADER => false,
+				// CURLOPT_FOLLOWLOCATION => true,
+				CURLOPT_ENCODING => "",
+				CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 6.1; rv:8.0) Gecko/20100101 Firefox/8.0",
+				CURLOPT_AUTOREFERER => true,
+				CURLOPT_CONNECTTIMEOUT => 120,
+				CURLOPT_TIMEOUT => 120,
+				CURLOPT_MAXREDIRS => 10) + $options;
 
-        if ($c_error_no = curl_errno($ch))
-            throw new Exception("[$c_error_no]" . curl_error($ch));
+		curl_setopt_array($ch, $options);
+		
+		 do{
+			$result = curl_exec($ch);
 
+			//If there is any error & this is last try i.e. retry=1 then throw exception
+			if ($c_error_no = curl_errno($ch)){
+				if($retry<=1)
+					throw new Exception("[$c_error_no]" . curl_error($ch));
+			}else{
+			//if no error set retry to 1;
+				$retry = 1;
+			}
 
-        curl_close($ch);
-
+			curl_close($ch);			
+		}while($retry--);
+		 
         return $result;
     }
 
@@ -75,8 +85,8 @@ class DataHandler
             CURLOPT_TIMEOUT => 120,
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_POST => 1,
-            CURLOPT_POSTFIELDS => $data)+$options;
-        curl_setopt_array($ch, $options );
+                CURLOPT_POSTFIELDS => $data) + $options;
+        curl_setopt_array($ch, $options);
         $result = curl_exec($ch);
 
         if ($c_error_no = curl_errno($ch))

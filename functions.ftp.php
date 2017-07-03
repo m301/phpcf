@@ -19,3 +19,19 @@ function ftpPutAll($conn_id, $src_dir, $dst_dir) {
     }
     $d->close();
 }
+
+
+function ftp_rrmdir($handle, $directory)
+{   # here we attempt to delete the file/directory
+    if( !(@ftp_rmdir($handle, $directory) || @ftp_delete($handle, $directory)) )
+    {            
+        # if the attempt to delete fails, get the file listing
+        $filelist = @ftp_nlist($handle, $directory);
+        // var_dump($filelist);exit;
+        # loop through the file list and recursively delete the FILE in the list
+        foreach($filelist as $file) {            
+           ftp_rrmdir($handle, $file);            
+        }
+        ftp_rrmdir($handle, $directory);
+    }
+}
